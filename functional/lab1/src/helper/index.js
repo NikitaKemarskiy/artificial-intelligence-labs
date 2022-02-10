@@ -4,13 +4,14 @@ const getRandomMatrixPositions = ({
   rows,
   columns,
   positionsNumber,
+  excludePositions,
 }) => _
   .times(positionsNumber, _.constant(null))
   .reduce(
     (positions) => [...positions, getUniqueRandomMatrixPosition({
       rows,
       columns,
-      positions,
+      positions: [...positions, ...excludePositions],
     })],
     []
   );

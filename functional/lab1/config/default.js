@@ -10,5 +10,11 @@ module.exports = {
     ghost: {
       number: 1,
     },
+  },
+  hero: {
+    position: {
+      row: 0,
+      column: 0,
+    }
   }
 }

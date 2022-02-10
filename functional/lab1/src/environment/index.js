@@ -1,15 +1,23 @@
 const config = require('config');
 const { getRandomMatrixPositions } = require('../helper');
 
-const getSignals = () => ({
-  stink: true,
-  wind: true,
-  shine: true,
-  kick: true,
-  cry: true,
+const getSignals = ({
+  environment,
+  arrowHit,
+}) => ({
+  stink: arePositionsNearby([environment.monster.position, environment.hero.position]),
+  wind: environment.entity.ghost.positions.some(
+    (position) => arePositionsNearby([position, environment.hero.position])
+  ),
+  kick:
+    environment.hero.position.row === (config.field.rows - 1)
+    && environment.hero.position.column === (config.field.columns - 1),
+  cry: arrowHit,
 });
 
 const generateEnvironment = () => {
+  const heroPosition = config.hero.position;
+
   /**
    * Start from 1 because we need extra position for "monster"
    */
@@ -18,34 +26,33 @@ const generateEnvironment = () => {
     1,
   );
 
-  const matrixPositions = getRandomMatrixPositions({
+  const environmentPositions = getRandomMatrixPositions({
     rows: config.field.rows,
     columns: config.field.columns,
     positionsNumber,
+    excludePositions: [heroPosition],
   });
 
-  console.dir(matrixPositions);
-
-  const [monsterPosition] = matrixPositions;
+  const [monsterPosition] = environmentPositions;
 
   const { result: entity } = Object.entries(config.entity).reduce(
     (accum, [name, { number }]) => ({
       metadata: {
-        matrixPositionsOffset: accum.metadata.matrixPositionsOffset + number
+        environmentPositionsOffset: accum.metadata.environmentPositionsOffset + number
       },
       result: {
         ...accum.result,
         [name]: {
-          positions: matrixPositions.slice(
-            accum.metadata.matrixPositionsOffset,
-            accum.metadata.matrixPositionsOffset + number
+          positions: environmentPositions.slice(
+            accum.metadata.environmentPositionsOffset,
+            accum.metadata.environmentPositionsOffset + number
           )
         }
       }
     }),
     {
       metadata: {
-        matrixPositionsOffset: 1,
+        environmentPositionsOffset: 1,
       },
       result: {},
     }
@@ -56,9 +63,25 @@ const generateEnvironment = () => {
     monster: {
       position: monsterPosition,
     },
+    hero: {
+      position: heroPosition
+    }
   }
 }
 
+const arePositionsNearby = (positions) => {
+  const [position1, position2] = positions;
+
+  return (
+    Math.abs(position1.row - position2.row) === 1
+    && position1.column === position2.column
+  ) || (
+    Math.abs(position1.column - position2.column) === 1
+    && position1.row === position2.row
+  )
+}
+
 module.exports = {
+  getSignals,
   generateEnvironment,
 };
