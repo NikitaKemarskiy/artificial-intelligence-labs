@@ -1,5 +1,6 @@
 const config = require('config');
 const { getRandomMatrixPositions } = require('../helper');
+const { Direction } = require('../enum');
 
 const getSignals = ({
   environment,
@@ -64,7 +65,8 @@ const generateEnvironment = () => {
       position: monsterPosition,
     },
     hero: {
-      position: heroPosition
+      position: heroPosition,
+      direction: Direction.FORWARD,
     }
   }
 }
