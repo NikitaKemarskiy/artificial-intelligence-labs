@@ -61,7 +61,11 @@ const arePositionsNearby = (position1) => (position2) =>
   || Math.abs(position1.column - position2.column) === 1
     && position1.row === position2.row;
 
+const arePositionsEqual = (position1) => (position2) =>
+  position1.row === position2.row && position1.column === position2.column;
+
 module.exports = {
   generateEnvironment,
   arePositionsNearby,
+  arePositionsEqual,
 };
