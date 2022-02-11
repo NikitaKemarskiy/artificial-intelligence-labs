@@ -10,6 +10,12 @@ module.exports = {
     ghost: {
       number: 1,
     },
+    monster: {
+      number: 1,
+      data: {
+        isAlive: true,
+      },
+    },
   },
   hero: {
     position: {

@@ -1,10 +1,8 @@
-const { generateEnvironment, getSignals } = require('./environment');
+const { generateEnvironment } = require('./lib/environment/field');
+const { getSignalsFromEnvironment } = require('./lib/environment/hero');
 
 const environment = generateEnvironment();
-const signals = getSignals({
-  environment,
-  arrowHit: false,
-});
+const signals = getSignalsFromEnvironment(environment);
 
 console.dir(environment, { depth: 4 });
 console.dir(signals, { depth: 4 });
