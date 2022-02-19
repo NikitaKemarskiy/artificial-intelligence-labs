@@ -2,54 +2,49 @@ const config = require('config');
 const { getRandomMatrixPositions } = require('../helper');
 const { Direction, Move } = require('../enum');
 
+const MONSTERS_NUMBER = 1;
+
 const generateEnvironment = () => {
   const heroPosition = config.hero.position;
 
-  /**
-   * Start from 1 because we need extra position for "monster"
-   */
-  const positionsNumber = Object.entries(config.entity).reduce(
-    (positionsNumber, [_, { number }]) => number ? positionsNumber + number : positionsNumber,
-    1,
-  );
-
-  const environmentPositions = getRandomMatrixPositions({
+  const [monsterPosition] = getRandomMatrixPositions({
     rows: config.field.rows,
     columns: config.field.columns,
-    positionsNumber,
+    positionsNumber: MONSTERS_NUMBER,
     excludePositions: [heroPosition],
   });
 
-  const { result: entity } = Object.entries(config.entity).reduce(
-    (accum, [name, { number }]) => ({
-      metadata: {
-        environmentPositionsOffset: accum.metadata.environmentPositionsOffset + number
-      },
-      result: {
-        ...accum.result,
-        [name]: {
-          positions: environmentPositions.slice(
-            accum.metadata.environmentPositionsOffset,
-            accum.metadata.environmentPositionsOffset + number
-          ),
-        }
-      }
-    }),
-    {
-      metadata: {
-        environmentPositionsOffset: 1,
-      },
-      result: {},
-    }
-  );
+  const goldBagPositions = getRandomMatrixPositions({
+    rows: config.field.rows,
+    columns: config.field.columns,
+    positionsNumber: MONSTERS_NUMBER,
+    excludePositions: [heroPosition, monsterPosition],
+  });
+
+  const ghostPositions = getRandomMatrixPositions({
+    rows: config.field.rows,
+    columns: config.field.columns,
+    positionsNumber: MONSTERS_NUMBER,
+    excludePositions: [heroPosition, monsterPosition, ...goldBagPositions],
+  });
 
   return {
-    entity,
+    entities: {
+      goldBag: {
+        positions: goldBagPositions,
+      },
+      ghost: {
+        positions: ghostPositions,
+      },
+    },
+    monster: {
+      position: monsterPosition,
+      isAlive: true,
+    },
     hero: {
       position: heroPosition,
       direction: Direction.RIGHT,
       spearsNumber: config.hero.data.spearsNumber,
-      monstersKilledNumber: 0,
       lastMove: Move.STEP,
       hitWall: false,
     }

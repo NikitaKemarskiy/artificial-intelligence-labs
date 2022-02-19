@@ -3,14 +3,11 @@ module.exports = {
     rows: 4,
     columns: 6,
   },
-  entity: {
+  entities: {
     goldBag: {
       number: 1,
     },
     ghost: {
-      number: 1,
-    },
-    monster: {
       number: 1,
     },
   },
@@ -22,5 +19,5 @@ module.exports = {
     data: {
       spearsNumber: 1,
     }
-  }
+  },
 }
