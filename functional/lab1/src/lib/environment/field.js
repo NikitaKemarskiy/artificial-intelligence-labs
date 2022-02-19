@@ -21,7 +21,7 @@ const generateEnvironment = () => {
   });
 
   const { result: entity } = Object.entries(config.entity).reduce(
-    (accum, [name, { number, data }]) => ({
+    (accum, [name, { number }]) => ({
       metadata: {
         environmentPositionsOffset: accum.metadata.environmentPositionsOffset + number
       },
@@ -32,7 +32,6 @@ const generateEnvironment = () => {
             accum.metadata.environmentPositionsOffset,
             accum.metadata.environmentPositionsOffset + number
           ),
-          ...data,
         }
       }
     }),
@@ -49,6 +48,8 @@ const generateEnvironment = () => {
     hero: {
       position: heroPosition,
       direction: Direction.RIGHT,
+      spearsNumber: config.hero.data.spearsNumber,
+      monstersKilledNumber: 0,
       lastMove: Move.STEP,
       hitWall: false,
     }

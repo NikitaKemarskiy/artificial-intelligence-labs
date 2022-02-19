@@ -12,15 +12,15 @@ module.exports = {
     },
     monster: {
       number: 1,
-      data: {
-        isAlive: true,
-      },
     },
   },
   hero: {
     position: {
       row: 0,
       column: 0,
+    },
+    data: {
+      spearsNumber: 1,
     }
   }
 }
